@@ -1,0 +1,42 @@
+---
+title: tolgee
+description: opensource lösungen mit backend für die verwaltung von translations
+---
+import { FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## s3 distribution
+
+In Tolgee gibt es die Möglichkeit die im Backend gepflegten translations in einem s3 bucket als quasi CDN bereitzustellen. Das Tool kümmert sich selbstständig um die Aktualisierung etc. Allerdings müssen die CORS entsprechend am Bucket konfiguriert werden.
+
+<Tabs>
+    <TabItem label="cors.xml">
+```xml
+<CORSConfiguration>
+    <CORSRule>
+        <AllowedOrigin>*</AllowedOrigin>
+        <AllowedMethod>GET</AllowedMethod>
+        <AllowedHeader>*</AllowedHeader>
+    </CORSRule>
+</CORSConfiguration>
+```
+    </TabItem>
+    <TabItem label="~/.s3cfg">
+```text
+[default]
+access_key = XXXXXXXXXXXX
+secret_key = XXXXXXXXXXXX
+host_base = nbg1.your-objectstorage.com
+host_bucket = %(bucket)s.nbg1.your-objectstorage.com
+use_https = True
+region = eu-central-1
+```
+    </TabItem>
+    <TabItem label="bash">
+```bash
+# brew install s3cmd
+# zum testen ob zugriff klappt:
+# s3cmd ls
+s3cmd setcors cors.xml s3://tolgee
+```
+    </TabItem>
+</Tabs>

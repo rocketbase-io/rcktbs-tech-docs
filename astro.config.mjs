@@ -37,6 +37,13 @@ export default defineConfig({
 						},
 					],
 				},
+				{
+					label: 'Infrastruktur',
+					items: [
+						{ label: 'dokku', slug: 'infra/dokku' },
+						{ label: 'tolgee', slug: 'infra/tolgee' },
+					],
+				},
 			],
 		}),
 	],
