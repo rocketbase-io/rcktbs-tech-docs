@@ -2,15 +2,14 @@
 title: Folder Structure
 description: Wo liegt ws und wir ist die Philosophie / erkennbare Muster für bessere Wartbarkeit
 ---
-import { FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
-import { Grid, GridItem } from '@/components';
+import { FileTree, LinkCard } from '@astrojs/starlight/components';
 
 In einem Monorepo ist es nicht so leicht die unterschiedlichen Betrachtungsweisen (Backend/Frontend/Middlewear) alle im gleichen Maße zu berücksichtigen. Einige Frameworks wie tanstack-router sind durch file-based-routing recht prägend und andere wie trpc lassen einem alle Optionen offen :)
 
 Nachfolgend habe ich versucht zunächst eine globale Ansicht der Struktur des Gesamten Projektes zu skizzieren. In den nachfolgenden Abschnitten gehe ich dann spezifisch auf Packages/Apps und ihre Besonderheiten ein.
 
 <FileTree>
-- package.json
+- .github/
 - apps/
     - server/
         - src/
@@ -38,7 +37,7 @@ Nachfolgend habe ich versucht zunächst eine globale Ansicht der Struktur des Ge
                 - _authenticated/
                     - employees/
                         - -components/
-                            - create-dialog.tsx used in index with queryParam as open/close state
+                            - create-dialog.tsx
                         - -hooks/
                         - index.tsx
                         - $employeeId/
@@ -54,11 +53,11 @@ Nachfolgend habe ich versucht zunächst eine globale Ansicht der Struktur des Ge
     - api/
         - src/
             - dto/
-                - _ (HoursCount, EffortBreakdown...)
+                - hours-count.ts
             - calculation/
-                - _ (margin, employeeVZE...)
+                - product-part-margin.ts
             - schema/
-                - index.ts collects all groups
+                - index.ts
                 - \{ENTITY_GROUP}/
                     - index.ts
                     - entity.ts
@@ -79,83 +78,53 @@ Nachfolgend habe ich versucht zunächst eine globale Ansicht der Struktur des Ge
                 - take-unique.ts
         - drizzle.config.ts
         - package.json
+- package.json
 </FileTree>
+
+## entity groups
+
+Um etwas mehr Struktur dem Projekt zu geben, macht es Sinn entitäten/objekte zusammen unter einem Ordner zu bündeln. Dies zieht sich auf die unterschiedlichen Packages (drizzle, server und co) durch...
+
+Beispiel für mögliche Groups
+- product
+    - product
+    - product-part
+    - product-bundle
+- employee
+    - employee
+    - employee-qualification
+- base
+    - qualification
+- sgb
+    - sgb
+    - sgb-team
 
 ## apps
 
 Hierunter verbergen sich ausführbare Anwendungsbestandteile primär **server** (mit db-zugriff und api-schnittstellen) und **web** (mit entsprechenden ui-interfaces).
 
-### server
+<LinkCard
+    title="Server"
+    href="/guides/apps/server/"
+    description="Backendentwicklung mit drizzle und co"
+/>
+<LinkCard
+    title="Web"
+    href="/guides/apps/web/"
+    description="Frontendwickliung mit tanstack und tailwind"
+/>
 
-Aktuell ein Express-Server welche mit Hilfe von [TRPC](https://trpc.io/) api-endpunkte in einer typesafty für das frontend bereitstellt.
+## packages
 
-#### dependencies
+Wiederverwendbare Bestandteile oder gesharter Code landen in packages
 
-<Grid>
-    <GridItem>
-        - @rep/drizzle
-        - @rep/api
-        - @rep/mail
-    </GridItem>
-    <GridItem>
-        - [trpc](https://trpc.io/)
-        - [express](https://expressjs.com/)
-        - [mapbox](https://www.mapbox.com/)
-        - [aws-s3](https://www.npmjs.com/package/@aws-sdk/client-s3)
-        - [puppeteer](https://pptr.dev/)
-    </GridItem>
-</Grid>
-
-### entity group
-
-Um etwas mehr Struktur dem projekt zu geben, macht es Sinn entitäten/objekte zusammen unter einem ordner zu bündeln.
-
-<FileTree>
-- index.ts
-- employee/
-    - employee.ts
-    - employee-qualification.ts
-    - index.ts
-- product/
-    - product.ts
-    - product-part.ts
-    - product-bundle.ts
-    - index.ts
-</FileTree>
-
-Codeseitig würde es dann so aussehen:
-
-<Tabs>
-<TabItem label="index.ts">
-```typescript
-export const appRouter = t.router({
-employee: employeeRouter,
-product: productRouter,
-});
-```
-</TabItem>
-<TabItem label="employee/index.ts">
-```typescript
-export const employeeGroupRouter = router({
-    employee: employeeRouter,
-    employeeQualification: employeeQualificationRouter,
-});
-```
-</TabItem>
-<TabItem label="employee/employee.ts">
-```typescript
-export const employeeRouter = router({
-    create: protectedRoleProcedure('user')
-        .input(employeeSchema.create)
-        .output(employeeSchema.read)
-        .mutation(async ({ ctx, input }) => {
-            // ...
-        })
-});
-```
-</TabItem>
-</Tabs>
-
-Die **3 Stufige** verleiht unseren routes und den ordnern eine bessere struktur und lässt leichter anhand von trpc und co die relevanten Dateien finden.
-
-
+<LinkCard
+    title="API"
+    href="/guides/packages/api/"
+    description="zod-Schemas, DTOs ud shared Methods"
+/>
+<LinkCard
+    title="Drizzle"
+    href="/guides/packages/drizzle/"
+    description="Datenbankstrukturen und Migrationen"
+/>

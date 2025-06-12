@@ -1,0 +1,76 @@
+---
+title: Server
+description: Details zu der Backendentwicklung
+---
+import { FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Grid, GridItem } from '@/components';
+
+Aktuell ein Express-Server welche mit Hilfe von [TRPC](https://trpc.io/) api-endpunkte in einer typesafty für das frontend bereitstellt.
+
+## dependencies
+
+<Grid>
+    <GridItem>
+        - @rep/drizzle
+        - @rep/api
+        - @rep/mail
+    </GridItem>
+    <GridItem>
+        - [trpc](https://trpc.io/)
+        - [express](https://expressjs.com/)
+        - [mapbox](https://www.mapbox.com/)
+        - [aws-s3](https://www.npmjs.com/package/@aws-sdk/client-s3)
+        - [puppeteer](https://pptr.dev/)
+    </GridItem>
+</Grid>
+
+## entity group
+
+
+<FileTree>
+    - index.ts
+    - employee/
+        - employee.ts
+        - employee-qualification.ts
+        - index.ts
+    - product/
+        - product.ts
+        - product-part.ts
+        - product-bundle.ts
+        - index.ts
+</FileTree>
+
+Codeseitig würde es dann so aussehen:
+
+<Tabs>
+    <TabItem label="index.ts">
+```typescript
+export const appRouter = t.router({
+    employee: employeeRouter,
+    product: productRouter,
+});
+```
+    </TabItem>
+    <TabItem label="employee/index.ts">
+```typescript
+export const employeeGroupRouter = router({
+    employee: employeeRouter,
+    employeeQualification: employeeQualificationRouter,
+});
+```
+    </TabItem>
+    <TabItem label="employee/employee.ts">
+```typescript
+export const employeeRouter = router({
+    create: protectedRoleProcedure('user')
+    .input(employeeSchema.create)
+    .output(employeeSchema.read)
+    .mutation(async ({ ctx, input }) => {
+    // ...
+    })
+});
+```
+    </TabItem>
+</Tabs>
+
+Die **3 Stufige** verleiht unseren routes und den ordnern eine bessere struktur und lässt leichter anhand von trpc und co die relevanten Dateien finden.

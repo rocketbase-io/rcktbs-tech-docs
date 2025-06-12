@@ -19,9 +19,22 @@ export default defineConfig({
 				{
 					label: 'Guides',
 					items: [
-						// Each item here is one entry in the navigation menu.
 						{ label: 'Intro', slug: 'guides/intro' },
 						{ label: 'Folder Structure', slug: 'guides/folder-structure' },
+						{
+							label: 'Apps',
+							items: [
+								{ label: 'Server', slug: 'guides/apps/server' },
+								{ label: 'Web', slug: 'guides/apps/web' },
+							],
+						},
+						{
+							label: 'Packages',
+							items: [
+								{ label: 'API', slug: 'guides/packages/api' },
+								{ label: 'Drizzle', slug: 'guides/packages/drizzle' },
+							],
+						},
 					],
 				},
 			],
