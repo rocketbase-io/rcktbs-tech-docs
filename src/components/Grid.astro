@@ -1,0 +1,22 @@
+<div class:list={['grid']}><slot /></div>
+
+<style>
+    @layer starlight.components {
+        .grid {
+            display: grid;
+            grid-template-columns: 100%;
+            gap: 1rem;
+        }
+
+        .grid > :global(*) {
+            margin-top: 0 !important;
+        }
+
+        @media (min-width: 50rem) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+        }
+    }
+</style>
